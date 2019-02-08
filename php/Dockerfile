@@ -49,7 +49,7 @@ RUN set -x \
                 intl \
                 gd \
                 pdo_oci \
-                zip
+                libzip-dev
 
 RUN set -x \
         && echo 'instantclient,/opt/oracle/instantclient_12_2/' | pecl install \
