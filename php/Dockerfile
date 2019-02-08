@@ -24,6 +24,7 @@ RUN set -x \
                 libfreetype6-dev \
                 libmcrypt-dev \
                 libpng-dev \
+                libzip-dev \
                 nodejs \
                 vim \
                 yarn \
@@ -49,7 +50,6 @@ RUN set -x \
                 intl \
                 gd \
                 pdo_oci \
-                libzip-dev \
                 zip
 
 RUN set -x \
