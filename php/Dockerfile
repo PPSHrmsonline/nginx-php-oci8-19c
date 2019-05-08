@@ -31,7 +31,7 @@ RUN set -x \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
-ADD instantclient_12_2.tar.gz /opt/oracle/
+ADD instantclient_18_5.tar.gz /opt/oracle/
 RUN  set -x \
         && chmod +x /opt/oracle/instantclient_18_5/sqlplus \
         && ln -s /opt/oracle/instantclient_18_5/libclntsh.so.18.1 /opt/oracle/instantclient_18_5/libclntsh.so \
