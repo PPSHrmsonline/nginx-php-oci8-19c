@@ -1,7 +1,7 @@
 FROM php:fpm
 
-ENV LD_LIBRARY_PATH /opt/oracle/instantclient_12_2
-ENV ORACLE_HOME /opt/oracle/instantclient_12_2
+ENV LD_LIBRARY_PATH /opt/oracle/instantclient_18_5
+ENV ORACLE_HOME /opt/oracle/instantclient_18_5
 
 RUN set -x \
         && groupmod -g 500 www-data \
@@ -33,16 +33,16 @@ RUN set -x \
 
 ADD instantclient_12_2.tar.gz /opt/oracle/
 RUN  set -x \
-        && chmod +x /opt/oracle/instantclient_12_2/sqlplus \
-        && ln -s /opt/oracle/instantclient_12_2/libclntsh.so.12.1 /opt/oracle/instantclient_12_2/libclntsh.so \
-        && ln -s /opt/oracle/instantclient_12_2/libclntshcore.so.12.1 /opt/oracle/instantclient_12_2/libclntshcore.so \
-        && ln -s /opt/oracle/instantclient_12_2/libocci.so.12.1 /opt/oracle/instantclient_12_2/libocci.so
+        && chmod +x /opt/oracle/instantclient_18_5/sqlplus \
+        && ln -s /opt/oracle/instantclient_18_5/libclntsh.so.18.1 /opt/oracle/instantclient_18_5/libclntsh.so \
+        && ln -s /opt/oracle/instantclient_18_5/libclntshcore.so.18.1 /opt/oracle/instantclient_18_5/libclntshcore.so \
+        && ln -s /opt/oracle/instantclient_18_5/libocci.so.18.1 /opt/oracle/instantclient_18_5/libocci.so
 
 RUN set -x \
         && docker-php-ext-configure \
                 gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
         && docker-php-ext-configure \
-                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_12_2/,12.2 \
+                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_18_5/,18.5 \
         && docker-php-ext-configure \
                 intl \
         && docker-php-ext-install -j$(nproc) \
@@ -53,7 +53,7 @@ RUN set -x \
                 zip
 
 RUN set -x \
-        && echo 'instantclient,/opt/oracle/instantclient_12_2/' | pecl install \
+        && echo 'instantclient,/opt/oracle/instantclient_18_5/' | pecl install \
                 oci8 \
         && yes '' | pecl install -f \
                 mcrypt
@@ -69,5 +69,3 @@ RUN set -x \
         && echo 'default_charset = "utf-8"' | tee -a /usr/local/etc/php/conf.d/locale.ini \
         && echo "cgi.fix_pathinfo = 1" | tee -a /usr/local/etc/php/conf.d/file.ini \
         && echo "upload_max_filesize = 8M" | tee -a /usr/local/etc/php/conf.d/file.ini
-
-# COPY ./zz-socket.conf /usr/local/etc/php-fpm.d/zz-socket.conf
