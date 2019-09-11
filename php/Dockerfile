@@ -1,7 +1,7 @@
 FROM php:fpm
 
-ENV LD_LIBRARY_PATH /opt/oracle/instantclient_18_5
-ENV ORACLE_HOME /opt/oracle/instantclient_18_5
+ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_3
+ENV ORACLE_HOME /opt/oracle/instantclient_19_3
 
 RUN set -x \
         && groupmod -g 500 www-data \
@@ -31,18 +31,18 @@ RUN set -x \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
-ADD instantclient_18_5.tar.gz /opt/oracle/
+ADD instantclient_19_3.tar.gz /opt/oracle/
 RUN  set -x \
-        && chmod +x /opt/oracle/instantclient_18_5/sqlplus \
-        && ln -s /opt/oracle/instantclient_18_5/libclntsh.so.18.1 /opt/oracle/instantclient_18_5/libclntsh.so \
-        && ln -s /opt/oracle/instantclient_18_5/libclntshcore.so.18.1 /opt/oracle/instantclient_18_5/libclntshcore.so \
-        && ln -s /opt/oracle/instantclient_18_5/libocci.so.18.1 /opt/oracle/instantclient_18_5/libocci.so
+        && chmod +x /opt/oracle/instantclient_19_3/sqlplus \
+        && ln -s /opt/oracle/instantclient_19_3/libclntsh.so.19.1 /opt/oracle/instantclient_19_3/libclntsh.so \
+        && ln -s /opt/oracle/instantclient_19_3/libclntshcore.so.19.1 /opt/oracle/instantclient_19_3/libclntshcore.so \
+        && ln -s /opt/oracle/instantclient_19_3/libocci.so.19.1 /opt/oracle/instantclient_19_3/libocci.so
 
 RUN set -x \
         && docker-php-ext-configure \
                 gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
         && docker-php-ext-configure \
-                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_18_5/,18.5 \
+                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_19_3/,19.3 \
         && docker-php-ext-configure \
                 intl \
         && docker-php-ext-install -j$(nproc) \
@@ -53,7 +53,7 @@ RUN set -x \
                 zip
 
 RUN set -x \
-        && echo 'instantclient,/opt/oracle/instantclient_18_5/' | pecl install \
+        && echo 'instantclient,/opt/oracle/instantclient_19_3/' | pecl install \
                 oci8 \
         && yes '' | pecl install -f \
                 mcrypt
@@ -68,4 +68,4 @@ RUN set -x \
         && echo 'date.timezone = "Asia/Bangkok"' | tee /usr/local/etc/php/conf.d/locale.ini \
         && echo 'default_charset = "utf-8"' | tee -a /usr/local/etc/php/conf.d/locale.ini \
         && echo "cgi.fix_pathinfo = 1" | tee -a /usr/local/etc/php/conf.d/file.ini \
-        && echo "upload_max_filesize = 8M" | tee -a /usr/local/etc/php/conf.d/file.ini
+        && echo "upload_max_filesize = 20M" | tee -a /usr/local/etc/php/conf.d/file.ini
