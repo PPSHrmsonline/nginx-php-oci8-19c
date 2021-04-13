@@ -1,7 +1,7 @@
 FROM nginx:mainline-alpine
 
 RUN set -x \
-        && adduser -D -u 500 -g 'core' core
+        && adduser -D -u 1000 -g 'pps' pps
         #  \
         # && chown -R core: /usr/lib/nginx
 
