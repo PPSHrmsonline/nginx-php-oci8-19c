@@ -18,7 +18,6 @@ RUN set -x \
         && curl -sL https://deb.nodesource.com/setup_9.x | bash - \
         && apt-get install --no-install-recommends -y \
                 git \
-                bash \
                 libaio1 \
                 libicu-dev \
                 libjpeg62-turbo-dev \
@@ -29,6 +28,7 @@ RUN set -x \
                 nodejs \
                 vim \
                 yarn \
+                bash \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
@@ -41,12 +41,15 @@ RUN  set -x \
 
 RUN set -x \
         && docker-php-ext-configure \
-                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_19_3/,19.1 \
+                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_19_3/,19.3 \
+        && docker-php-ext-configure \
+                intl \
         && docker-php-ext-install -j$(nproc) \
+                bcmath \
+                intl \
                 gd \
                 pdo_oci \
-                zip \
-                zlib
+                zip
 
 RUN set -x \
         && echo 'instantclient,/opt/oracle/instantclient_19_3/' | pecl install \
