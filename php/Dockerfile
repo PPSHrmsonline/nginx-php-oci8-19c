@@ -4,8 +4,8 @@ ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_3
 ENV ORACLE_HOME /opt/oracle/instantclient_19_3
 
 RUN set -x \
-        && groupmod -g 500 www-data \
-        && usermod -u 500 www-data
+        && groupmod -g 1000 www-data \
+        && usermod -u 1000 www-data
 
 RUN set -x \
         && apt-get update \
@@ -18,6 +18,7 @@ RUN set -x \
         && curl -sL https://deb.nodesource.com/setup_9.x | bash - \
         && apt-get install --no-install-recommends -y \
                 git \
+                bash \
                 libaio1 \
                 libicu-dev \
                 libjpeg62-turbo-dev \
