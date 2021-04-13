@@ -41,17 +41,12 @@ RUN  set -x \
 
 RUN set -x \
         && docker-php-ext-configure \
-                gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-        && docker-php-ext-configure \
                 pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_19_3/,19.3 \
-        && docker-php-ext-configure \
-                intl \
         && docker-php-ext-install -j$(nproc) \
-                bcmath \
-                intl \
                 gd \
                 pdo_oci \
-                zip
+                zip \
+                zlib
 
 RUN set -x \
         && echo 'instantclient,/opt/oracle/instantclient_19_3/' | pecl install \
@@ -68,5 +63,8 @@ RUN set -x \
 RUN set -x \
         && echo 'date.timezone = "Asia/Bangkok"' | tee /usr/local/etc/php/conf.d/locale.ini \
         && echo 'default_charset = "utf-8"' | tee -a /usr/local/etc/php/conf.d/locale.ini \
-        && echo "cgi.fix_pathinfo = 1" | tee -a /usr/local/etc/php/conf.d/file.ini \
-        && echo "upload_max_filesize = 20M" | tee -a /usr/local/etc/php/conf.d/file.ini
+        && echo "memory_limit = 1024M" | tee /usr/local/etc/php/conf.d/memory-limit-php.ini \        
+        && echo "max_execution_time = 1200" | tee -a /usr/local/etc/php/conf.d/memory-limit-php.ini \        
+        && echo "max_input_time = 300" | tee -a /usr/local/etc/php/conf.d/memory-limit-php.ini \        
+        && echo "upload_max_filesize = 512M" | tee /usr/local/etc/php/conf.d/file.ini \
+        && echo "post_max_size = 512M" | tee -a /usr/local/etc/php/conf.d/file.ini 
