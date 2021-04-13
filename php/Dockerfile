@@ -41,7 +41,7 @@ RUN  set -x \
 
 RUN set -x \
         && docker-php-ext-configure \
-                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_19_3/,19.3 \
+                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_19_3/,19.1 \
         && docker-php-ext-install -j$(nproc) \
                 gd \
                 pdo_oci \
