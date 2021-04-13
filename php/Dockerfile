@@ -5,7 +5,7 @@ ENV ORACLE_HOME /opt/oracle/instantclient_19_10
 
 RUN set -x \
         && groupmod -g 1000 www-data \
-        && useradd -u 1000 -g 1000 www-data
+        && usermod -u 1000 -g 1000 www-data
 
 RUN set -x \
         && apt-get update \
