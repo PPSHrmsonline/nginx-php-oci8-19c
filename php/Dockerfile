@@ -4,19 +4,18 @@ ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_10
 ENV ORACLE_HOME /opt/oracle/instantclient_19_10
 
 RUN set -x \
-        && groupmod -g 500 www-data \
-        && usermod -u 500 www-data
+        && apk --no-cache add shadow \
+        && groupmod -g 1000 www-data \
+        && useradd -u 1000 -g 1000 www-data
 
 RUN set -x \
-        && apt-get update \
-        && apt-get -y upgrade \
-        && apt-get install --no-install-recommends -y \
+        && apk add \
                apt-transport-https \
                gnupg \
         && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
         && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
         && curl -sL https://deb.nodesource.com/setup_9.x | bash - \
-        && apt-get install --no-install-recommends -y \
+        && apk add \
                 git \
                 libaio1 \
                 libicu-dev \
