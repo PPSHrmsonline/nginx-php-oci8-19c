@@ -1,4 +1,4 @@
-FROM php:fpm
+FROM php:7.4-fpm
 
 ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_10
 ENV ORACLE_HOME /opt/oracle/instantclient_19_10
