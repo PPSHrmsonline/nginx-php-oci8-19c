@@ -1,7 +1,7 @@
-FROM php8.0.3:fpm
+FROM php:7.4.16-fpm
 
-ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_10
-ENV ORACLE_HOME /opt/oracle/instantclient_19_10
+ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_3
+ENV ORACLE_HOME /opt/oracle/instantclient_19_3
 
 RUN set -x \
         && groupmod -g 1000 www-data \
@@ -33,16 +33,16 @@ RUN set -x \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
-ADD instantclient_19_10.tar.gz /opt/oracle/
+ADD instantclient_19_3.tar.gz /opt/oracle/
 RUN  set -x \
-        && chmod +x /opt/oracle/instantclient_19_10/sqlplus \
-        && ln -s /opt/oracle/instantclient_19_10/libclntsh.so.19.1 /opt/oracle/instantclient_19_10/libclntsh.so \
-        && ln -s /opt/oracle/instantclient_19_10/libclntshcore.so.19.1 /opt/oracle/instantclient_19_10/libclntshcore.so \
-        && ln -s /opt/oracle/instantclient_19_10/libocci.so.19.1 /opt/oracle/instantclient_19_10/libocci.so
+        && chmod +x /opt/oracle/instantclient_19_3/sqlplus \
+        && ln -s /opt/oracle/instantclient_19_3/libclntsh.so.19.1 /opt/oracle/instantclient_19_3/libclntsh.so \
+        && ln -s /opt/oracle/instantclient_19_3/libclntshcore.so.19.1 /opt/oracle/instantclient_19_3/libclntshcore.so \
+        && ln -s /opt/oracle/instantclient_19_3/libocci.so.19.1 /opt/oracle/instantclient_19_3/libocci.so
 
 RUN set -x \
         && docker-php-ext-configure \
-                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_19_10/,19.10 \
+                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_19_3/,19.10 \
         && docker-php-ext-configure \
                 intl \
         && docker-php-ext-install -j$(nproc) \
@@ -53,7 +53,7 @@ RUN set -x \
                 zip
 
 RUN set -x \
-        && echo 'instantclient,/opt/oracle/instantclient_19_10/' | pecl install \
+        && echo 'instantclient,/opt/oracle/instantclient_19_3/' | pecl install \
                 oci8 \
         && yes '' | pecl install -f \
                 mcrypt
