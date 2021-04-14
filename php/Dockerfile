@@ -56,6 +56,10 @@ RUN set -x \
                 oci8 \
         && yes '' | pecl install -f \
                 mcrypt
+                
+FROM nginx:mainline-alpine
+
+RUN sed -i "s/user  nginx;/user  core;/g" /etc/nginx/nginx.conf                
 
 RUN set -x \
         && docker-php-ext-enable \
