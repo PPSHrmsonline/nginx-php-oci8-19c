@@ -11,6 +11,7 @@ RUN set -x \
         && apt-get update \
         && apt-get -y upgrade \
         && apt-get install --no-install-recommends -y \
+               nginx \
                apt-transport-https \
                gnupg \
         && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
@@ -57,9 +58,7 @@ RUN set -x \
         && yes '' | pecl install -f \
                 mcrypt
                 
-FROM nginx:mainline-alpine
-
-RUN sed -i "s/user  nginx;/user  core;/g" /etc/nginx/nginx.conf                
+RUN sed -i "s/user  nginx;/user  www-data;/g" /etc/nginx/nginx.conf                
 
 RUN set -x \
         && docker-php-ext-enable \
