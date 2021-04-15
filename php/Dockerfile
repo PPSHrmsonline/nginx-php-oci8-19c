@@ -1,4 +1,4 @@
-FROM php:7.4.14-fpm
+FROM php:7.4-fpm
 
 ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_3
 ENV ORACLE_HOME /opt/oracle/instantclient_19_3
@@ -42,7 +42,7 @@ RUN  set -x \
 
 RUN set -x \
         && docker-php-ext-configure \
-                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_19_3/,19.10 \
+                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_19_3/,19.3 \
         && docker-php-ext-configure \
                 intl \
         && docker-php-ext-install -j$(nproc) \
