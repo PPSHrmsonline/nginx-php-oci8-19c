@@ -36,7 +36,7 @@ RUN set -x \
         && apk clean \
         && rm -rf /var/lib/apt/lists/*
 
-//ADD instantclient_19_3.tar.gz /opt/oracle/
+#ADD instantclient_19_3.tar.gz /opt/oracle/
 RUN wget https://download.oracle.com/otn_software/linux/instantclient/193000/instantclient-basic-linux.x64-19.3.0.0.0dbru.zip && \
       unzip instantclient-basic-linux.x64-19.3.0.0.0dbru.zip && \
       cp -r instantclient_19_3/* /opt/oracle && \
