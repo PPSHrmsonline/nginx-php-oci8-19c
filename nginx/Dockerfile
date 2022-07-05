@@ -36,7 +36,11 @@ RUN set -x \
         && apk clean \
         && rm -rf /var/lib/apt/lists/*
 
-ADD instantclient_19_3.tar.gz /opt/oracle/
+//ADD instantclient_19_3.tar.gz /opt/oracle/
+RUN wget https://download.oracle.com/otn_software/linux/instantclient/193000/instantclient-basic-linux.x64-19.3.0.0.0dbru.zip && \
+      unzip instantclient-basic-linux.x64-19.3.0.0.0dbru.zip && \
+      cp -r instantclient_19_3/* /opt/oracle && \
+      rm -rf instantclient-basic-linux.x64-19.3.0.0.0dbru.zip
 RUN  set -x \
         && chmod +x /opt/oracle/instantclient_19_3/sqlplus \
         && ln -s /opt/oracle/instantclient_19_3/libclntsh.so.19.1 /opt/oracle/instantclient_19_3/libclntsh.so \
