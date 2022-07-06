@@ -1,7 +1,7 @@
 FROM nginx:mainline-alpine
 
-RUN set -x \
-        && adduser -D -u 1000 -g 'www-data' www-data
+#RUN set -x \
+#        && adduser -D -u 1000 -g 'www-data' www-data
         #  \
         # && chown -R core: /usr/lib/nginx
 
