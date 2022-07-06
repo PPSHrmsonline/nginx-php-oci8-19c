@@ -14,7 +14,7 @@ RUN set -x \
         && apk update \
         && apk upgrade \
         && apk add \
-               php-7.4.16 \
+               php-7.4.30 \
                apt-transport-https \
                gnupg \
         #&& curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
