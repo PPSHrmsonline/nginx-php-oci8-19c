@@ -37,7 +37,7 @@ RUN set -x \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
-ADD conf.d/hcm.conf /etc/nginx/conf.d 
+ADD hcm.conf /etc/nginx/conf.d 
 RUN sed -i "s/user  nginx;/user  www-data;/g" /etc/nginx/nginx.conf
 ADD instantclient_19_3.tar.gz /opt/oracle/
 RUN  set -x \
