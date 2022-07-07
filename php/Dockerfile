@@ -2,10 +2,14 @@ FROM php:7.4-fpm
 
 ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_3
 ENV ORACLE_HOME /opt/oracle/instantclient_19_3
+       
+ 
 
 RUN set -x \
         && groupmod -g 1000 www-data \
         && usermod -u 1000 -g 1000 www-data
+RUN set -x \
+        adduser -D -u 1000 -g www-data
 
 RUN set -x \
         && apt-get update \
@@ -16,7 +20,7 @@ RUN set -x \
                gnupg \
         && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
         && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-        && curl -sL https://deb.nodesource.com/setup_9.x | bash - \
+        && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
         && apt-get install --no-install-recommends -y \
                 git \
                 libaio1 \
@@ -33,6 +37,8 @@ RUN set -x \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
+ADD conf.d/hcm.conf /etc/nginx/conf.d 
+RUN sed -i "s/user  nginx;/user  www-data;/g" /etc/nginx/nginx.conf
 ADD instantclient_19_3.tar.gz /opt/oracle/
 RUN  set -x \
         && chmod +x /opt/oracle/instantclient_19_3/sqlplus \

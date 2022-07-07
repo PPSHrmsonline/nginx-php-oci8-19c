@@ -28,14 +28,7 @@ jobs:
         name: PHP Build and push
         uses: docker/build-push-action@v3
         with:
-          context: ./php
+          context: .
           push: true
-          tags: peopleplus/php-oci8:latest
-      -
-        name: Nginx Build and push Nginx
-        uses: docker/build-push-action@v3
-        with:
-          context: ./nginx
-          push: true
-          tags: peopleplus/nginx-oci8:latest
-       
+          tags: peopleplus/nginx-php-oci8-19c-beta:latest
+ 
