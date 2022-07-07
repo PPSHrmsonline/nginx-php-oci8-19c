@@ -2,9 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "alpha" ]
+    branches: [ "alpha2" ]
   pull_request:
-    branches: [ "alpha" ]
+    branches: [ "alpha2" ]
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -25,16 +25,17 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
       -
-        name: Nginx Build and push Nginx
-        uses: docker/build-push-action@v3
-        with:
-          context: ./nginx
-          push: true
-          tags: peopleplus/nginx-oci8:latest
-      -
         name: PHP Build and push
         uses: docker/build-push-action@v3
         with:
           context: ./php
           push: true
           tags: peopleplus/php-oci8:latest
+      -
+        name: Nginx Build and push Nginx
+        uses: docker/build-push-action@v3
+        with:
+          context: ./nginx
+          push: true
+          tags: peopleplus/nginx-oci8:latest
+       
