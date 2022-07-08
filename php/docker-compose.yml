@@ -1,0 +1,15 @@
+version: "3"
+services:
+  php-backend:
+    image: "oci8"
+    container_name: "nginx-php-oci8-19c"
+    environment:
+      - TZ=Asia/Bangkok
+    volumes:
+      - "./code:/usr/share/code"
+      #- "./nginx/conf.d:/etc/nginx/conf.d"
+      #- "./php/run:/run/php"
+    ports:
+      - 8080:80
+    working_dir: "/usr/share/code"
+    network_mode: "bridge"
