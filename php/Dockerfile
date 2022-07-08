@@ -34,12 +34,14 @@ RUN set -x \
         bash \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
+
+
 ADD nginx.conf /etc/nginx
 ADD hcm2.conf /etc/nginx/conf.d 
 RUN mkdir -p /usr/share/code
 ADD index.php /usr/share/code
-CMD ["nginx", "-g", "daemon off;"]
 RUN sed -i "s/user  nginx;/user  www-data;/g" /etc/nginx/nginx.conf
+
 ADD instantclient_19_3.tar.gz /opt/oracle/
 RUN  set -x \
         && chmod +x /opt/oracle/instantclient_19_3/sqlplus \
@@ -65,7 +67,7 @@ RUN set -x \
         && yes '' | pecl install -f \
         mcrypt
 
-RUN sed -i "s/user  nginx;/user  www-data;/g" /etc/nginx/nginx.conf                
+#RUN sed -i "s/user  nginx;/user  www-data;/g" /etc/nginx/nginx.conf                
 
 RUN set -x \
         && docker-php-ext-enable \
@@ -81,3 +83,7 @@ RUN set -x \
         && echo "max_input_time = 300" | tee -a /usr/local/etc/php/conf.d/memory-limit-php.ini \        
         && echo "upload_max_filesize = 512M" | tee /usr/local/etc/php/conf.d/file.ini \
         && echo "post_max_size = 512M" | tee -a /usr/local/etc/php/conf.d/file.ini 
+
+#CMD service nginx start && tail -F /var/log/nginx/access.log
+
+#need to set shell
