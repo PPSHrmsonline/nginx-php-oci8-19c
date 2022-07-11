@@ -84,6 +84,4 @@ RUN set -x \
         && echo "upload_max_filesize = 512M" | tee /usr/local/etc/php/conf.d/file.ini \
         && echo "post_max_size = 512M" | tee -a /usr/local/etc/php/conf.d/file.ini 
 
-CMD service nginx start && tail -F /var/log/nginx/access.log
-#CMD /usr/bin/nginx ; 
-#need to set shell
+CMD service nginx start && php-fpm
