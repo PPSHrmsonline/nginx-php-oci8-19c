@@ -1,7 +1,7 @@
 version: "3"
 services:
   php-backend:
-    image: "test6"
+    image: "test3"
     container_name: "nginx-php-oci8-19c"
     environment:
       - TZ=Asia/Bangkok

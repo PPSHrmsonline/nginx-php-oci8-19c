@@ -30,6 +30,8 @@ RUN set -x \
         libzip-dev \
         nodejs \
         vim \
+        python3-pip \
+        python-setuptools \
         yarn \
         bash \
         && apt-get clean \
@@ -59,7 +61,12 @@ RUN set -x \
         intl \
         gd \
         pdo_oci \
-        zip
+        zip   
+
+RUN pip install wheel \
+        && pip install supervisor \
+        && pip install git+https://github.com/coderanger/supervisor-stdout \
+        && echo "#!/bin/sh\nexit 0" > /usr/sbin/policy-rc.d 
 
 RUN set -x \
         && echo 'instantclient,/opt/oracle/instantclient_19_3/' | pecl install \
@@ -83,5 +90,12 @@ RUN set -x \
         && echo "max_input_time = 300" | tee -a /usr/local/etc/php/conf.d/memory-limit-php.ini \        
         && echo "upload_max_filesize = 512M" | tee /usr/local/etc/php/conf.d/file.ini \
         && echo "post_max_size = 512M" | tee -a /usr/local/etc/php/conf.d/file.ini 
+# Supervisor config
+COPY ./supervisord.conf /etc/supervisord.conf
 
-CMD service nginx start && php-fpm
+# Copy Scripts
+COPY ./start.sh /start.sh
+
+EXPOSE 80
+
+CMD ["/start.sh"]
