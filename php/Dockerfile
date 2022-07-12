@@ -97,5 +97,5 @@ COPY ./supervisord.conf /etc/supervisord.conf
 COPY ./start.sh /start.sh
 
 EXPOSE 80
-
+ENTRYPOINT ["sh", "/usr/local/bin/docker-php-entrypoint"]
 CMD ["/start.sh"]
