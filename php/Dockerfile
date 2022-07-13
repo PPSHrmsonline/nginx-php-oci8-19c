@@ -97,5 +97,4 @@ COPY ./supervisord.conf /etc/supervisord.conf
 COPY ./start.sh /start.sh
 
 EXPOSE 80
-RUN ["chmod", "+x", "/usr/src/app/docker-entrypoint.sh"]
 CMD ["/start.sh"]
