@@ -95,7 +95,6 @@ COPY ./supervisord.conf /etc/supervisord.conf
 
 # Copy Scripts
 COPY ./start.sh /start.sh
-
 EXPOSE 80
 # COPY ./docker-entrypoint.sh /
 # ENTRYPOINT ["/docker-entrypoint.sh"]
