@@ -99,5 +99,8 @@ EXPOSE 80
 # COPY ./docker-entrypoint.sh /
 # ENTRYPOINT ["/docker-entrypoint.sh"]
 COPY ./start.sh /
+WORKDIR /
+RUN chmod +x start.sh
+
 # ENTRYPOINT ["/start.sh"]
 CMD ["/start.sh"]
