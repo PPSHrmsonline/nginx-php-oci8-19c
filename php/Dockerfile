@@ -1,7 +1,7 @@
-FROM php:7.4-fpm
+FROM php:8.1-fpm
 
-ENV LD_LIBRARY_PATH /opt/oracle/instantclient_19_3
-ENV ORACLE_HOME /opt/oracle/instantclient_19_3
+# ENV LD_LIBRARY_PATH /opt/oracle/instantclient_21_7
+ENV ORACLE_HOME /opt/oracle/instantclient
 
 RUN set -x \
         && groupmod -g 1000 www-data \
@@ -11,60 +11,77 @@ RUN set -x \
         && apt-get update \
         && apt-get -y upgrade \
         && apt-get install --no-install-recommends -y \
-               nginx \
-               apt-transport-https \
-               gnupg \
+        nginx \
+        apt-transport-https \
+        gnupg \
         && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
         && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-        && curl -sL https://deb.nodesource.com/setup_9.x | bash - \
+        && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
         && apt-get install --no-install-recommends -y \
-                git \
-                libaio1 \
-                libicu-dev \
-                libjpeg62-turbo-dev \
-                libfreetype6-dev \
-                libmcrypt-dev \
-                libpng-dev \
-                libzip-dev \
-                nodejs \
-                vim \
-                yarn \
-                bash \
+        git \
+        libaio1 \
+        libicu-dev \
+        libaio-dev \
+        libjpeg62-turbo-dev \
+        libfreetype6-dev \
+        libmcrypt-dev \
+        libpng-dev \
+        libzip-dev \
+        nodejs \
+        vim \
+        unzip \
+        yarn \
+        bash \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
-ADD instantclient_19_3.tar.gz /opt/oracle/
-RUN  set -x \
-        && chmod +x /opt/oracle/instantclient_19_3/sqlplus \
-        && ln -s /opt/oracle/instantclient_19_3/libclntsh.so.19.1 /opt/oracle/instantclient_19_3/libclntsh.so \
-        && ln -s /opt/oracle/instantclient_19_3/libclntshcore.so.19.1 /opt/oracle/instantclient_19_3/libclntshcore.so \
-        && ln -s /opt/oracle/instantclient_19_3/libocci.so.19.1 /opt/oracle/instantclient_19_3/libocci.so
+ADD instantclient-basic-linux.x64-21.7.0.0.0.zip /tmp/
+ADD instantclient-sqlplus-linux.x64-21.7.0.0.0.zip /tmp/
+ADD instantclient-sdk-linux.x64-21.7.0.0.0.zip /tmp/
+
+RUN mkdir -p /opt/oracle/instantclient_21_7
+RUN unzip /tmp/instantclient-basic-linux.x64-21.7.0.0.0.zip -d /opt/oracle/instantclient_21_7
+RUN unzip /tmp/instantclient-sqlplus-linux.x64-21.7.0.0.0.zip -d  /opt/oracle/instantclient_21_7
+RUN unzip /tmp/instantclient-sdk-linux.x64-21.7.0.0.0.zip -d  /opt/oracle/instantclient_21_7
+
+RUN mv /opt/oracle/instantclient_21_7 /opt/oracle/instantclient
+
+# RUN  set -x \
+#         && chmod +x /opt/oracle/instantclient_21_7/sqlplus 
+RUN ln -s /opt/oracle/instantclient_21_7/libclntsh.so.21.1 /opt/oracle/instantclient/libclntsh.so 
+RUN ln -s /opt/oracle/instantclient_21_7/libclntshcore.so.21.1 /opt/oracle/instantclient/libclntshcore.so 
+RUN ln -s /opt/oracle/instantclient_21_7/libocci.so.21.1 /opt/oracle/instantclient/libocci.so
+
+ENV LD_LIBRARY_PATH=/opt/oracle/instantclient
+RUN echo 'instantclient,/opt/oracle/instantclient' | pecl install oci8
+
+RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-install pdo_oci
+RUN docker-php-ext-enable oci8
+
 
 RUN set -x \
-        && docker-php-ext-configure \
-                pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient_19_3/,19.3 \
-        && docker-php-ext-configure \
-                intl \
         && docker-php-ext-install -j$(nproc) \
-                bcmath \
-                intl \
-                gd \
-                pdo_oci \
-                zip
+        bcmath \
+        intl \
+        gd \
+        pdo_oci \
+        zip
 
 RUN set -x \
-        && echo 'instantclient,/opt/oracle/instantclient_19_3/' | pecl install \
-                oci8-2.2.0 \
+        && echo 'instantclient,/opt/oracle/instantclient/' | pecl install \
+        oci8-2.2.0 \
         && yes '' | pecl install -f \
-                mcrypt
-                
+        mcrypt
+
 RUN sed -i "s/user  nginx;/user  www-data;/g" /etc/nginx/nginx.conf                
 
 RUN set -x \
         && docker-php-ext-enable \
-                mcrypt \
-                oci8 \
-                opcache
+        mcrypt \
+        oci8 \
+        opcache
 
 RUN set -x \
         && echo 'date.timezone = "Asia/Bangkok"' | tee /usr/local/etc/php/conf.d/locale.ini \
