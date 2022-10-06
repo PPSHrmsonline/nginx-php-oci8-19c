@@ -51,37 +51,43 @@ RUN mv /opt/oracle/instantclient_21_7 /opt/oracle/instantclient
 RUN ln -s /opt/oracle/instantclient_21_7/libclntsh.so.21.1 /opt/oracle/instantclient/libclntsh.so 
 RUN ln -s /opt/oracle/instantclient_21_7/libclntshcore.so.21.1 /opt/oracle/instantclient/libclntshcore.so 
 RUN ln -s /opt/oracle/instantclient_21_7/libocci.so.21.1 /opt/oracle/instantclient/libocci.so
-
+RUN echo /opt/oracle/instantclient_21_7 > /etc/ld.so.conf.d/oracle-instantclient
 ENV LD_LIBRARY_PATH=/opt/oracle/instantclient
-RUN echo 'instantclient,/opt/oracle/instantclient' | pecl install oci8
+RUN ldconfig
 
-RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient
-RUN docker-php-ext-configure intl
-RUN docker-php-ext-install pdo_oci
-RUN docker-php-ext-enable oci8
+#RUN pecl install oci8
+
+# RUN echo 'instantclient,/opt/oracle/instantclient' | pecl install oci8
+
+# #RUN echo 'instantclient,/opt/oracle/instantclient' | pecl install oci8
+# RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient
+
+# RUN docker-php-ext-configure intl
+# RUN docker-php-ext-install pdo_oci
+# RUN docker-php-ext-enable oci8
 
 
-RUN set -x \
-        && docker-php-ext-install -j$(nproc) \
-        bcmath \
-        intl \
-        gd \
-        pdo_oci \
-        zip
+# RUN set -x \
+#         && docker-php-ext-install -j$(nproc) \
+#         bcmath \
+#         intl \
+#         gd \
+#         pdo_oci \
+#         zip
 
-RUN set -x \
-        && echo 'instantclient,/opt/oracle/instantclient/' | pecl install \
-        oci8-2.2.0 \
-        && yes '' | pecl install -f \
-        mcrypt
+# RUN set -x \
+#         && echo 'instantclient,/opt/oracle/instantclient/' | pecl install \
+#         oci8-2.2.0 \
+#         && yes '' | pecl install -f \
+#         mcrypt
 
-RUN sed -i "s/user  nginx;/user  www-data;/g" /etc/nginx/nginx.conf                
+# RUN sed -i "s/user  nginx;/user  www-data;/g" /etc/nginx/nginx.conf                
 
-RUN set -x \
-        && docker-php-ext-enable \
-        mcrypt \
-        oci8 \
-        opcache
+# RUN set -x \
+#         && docker-php-ext-enable \
+#         mcrypt \
+#         oci8 \
+#         opcache
 
 RUN set -x \
         && echo 'date.timezone = "Asia/Bangkok"' | tee /usr/local/etc/php/conf.d/locale.ini \
