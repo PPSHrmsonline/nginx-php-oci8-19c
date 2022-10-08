@@ -34,7 +34,6 @@ RUN set -x \
         bash \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
-
 # ADD instantclient-basic-linux.x64-21.7.0.0.0.zip /tmp/
 # ADD instantclient-sqlplus-linux.x64-21.7.0.0.0.zip /tmp/
 # ADD instantclient-sdk-linux.x64-21.7.0.0.0.zip /tmp/
