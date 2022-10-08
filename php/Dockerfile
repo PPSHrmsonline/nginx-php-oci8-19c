@@ -1,7 +1,6 @@
 FROM php:8.1-fpm
-
-# ENV LD_LIBRARY_PATH /opt/oracle/instantclient_21_7
- 
+ENV ORACLE_HOME=/opt/oracle/instantclient
+ENV LD_LIBRARY_PATH=instantclient,/opt/oracle/instantclient
 
 RUN set -x \
         && groupmod -g 1000 www-data \
@@ -28,6 +27,7 @@ RUN set -x \
         libpng-dev \
         libzip-dev \
         nodejs \
+        wget \
         vim \
         unzip \
         yarn \
@@ -35,48 +35,40 @@ RUN set -x \
         && apt-get clean \
         && rm -rf /var/lib/apt/lists/*
 
-ADD instantclient-basic-linux.x64-21.7.0.0.0.zip /tmp/
-ADD instantclient-sqlplus-linux.x64-21.7.0.0.0.zip /tmp/
-ADD instantclient-sdk-linux.x64-21.7.0.0.0.zip /tmp/
-
+# ADD instantclient-basic-linux.x64-21.7.0.0.0.zip /tmp/
+# ADD instantclient-sqlplus-linux.x64-21.7.0.0.0.zip /tmp/
+# ADD instantclient-sdk-linux.x64-21.7.0.0.0.zip /tmp/
+ 
 RUN mkdir -p /opt/oracle
 # RUN mkdir -p /opt/oracle/instantclient/sdk/include
-RUN unzip /tmp/instantclient-basic-linux.x64-21.7.0.0.0.zip -d /opt/oracle
-RUN unzip /tmp/instantclient-sqlplus-linux.x64-21.7.0.0.0.zip -d  /opt/oracle
-RUN unzip /tmp/instantclient-sdk-linux.x64-21.7.0.0.0.zip -d  /opt/oracle
+RUN wget https://download.oracle.com/otn_software/linux/instantclient/217000/instantclient-basic-linux.x64-21.7.0.0.0dbru.zip  \ 
+        && wget https://download.oracle.com/otn_software/linux/instantclient/217000/instantclient-sdk-linux.x64-21.7.0.0.0dbru.zip \
+        && wget https://download.oracle.com/otn_software/linux/instantclient/217000/instantclient-sqlplus-linux.x64-21.7.0.0.0dbru.zip \
+        && unzip instantclient-basic-linux.x64-21.7.0.0.0dbru.zip -d /opt/oracle \
+        && unzip instantclient-sdk-linux.x64-21.7.0.0.0dbru.zip -d /opt/oracle \
+        && unzip instantclient-sqlplus-linux.x64-21.7.0.0.0dbru.zip -d /opt/oracle \
+        && rm -rf *.zip \
+        && mv /opt/oracle/instantclient_21_7 /opt/oracle/instantclient
 
-# RUN mv /opt/oracle/instantclient_21_7 /opt/oracle/instantclient
- RUN mkdir -p /opt/oracle/instantclient
-
-# RUN  set -x \
-#         && chmod +x /opt/oracle/instantclient_21_7/sqlplus 
-RUN ln -s /opt/oracle/instantclient_21_7/libclntsh.so.21.1 /opt/oracle/instantclient/libclntsh.so 
-RUN ln -s /opt/oracle/instantclient_21_7/libclntshcore.so.21.1 /opt/oracle/instantclient/libclntshcore.so 
-RUN ln -s /opt/oracle/instantclient_21_7/libocci.so.21.1 /opt/oracle/instantclient/libocci.so
-#RUN ln -s /opt/oracle/instantclient_21_7/sdk/include/*.h /opt/oracle/instantclient_21_7/sdk/include
-# RUN echo '/opt/oracle/instantclient_21_7 > /etc/ld.so.conf.d/oracle-instantclient'
-ENV ORACLE_HOME=/opt/oracle/instantclient
-ENV LD_LIBRARY_PATH=/opt/oracle/instantclient
-RUN ldconfig
-# RUN pecl install oci8
-
+# RUN unzip /tmp/instantclient-sqlplus-linux.x64-21.7.0.0.0.zip -d  /opt/oracle
+# RUN unzip /tmp/instantclient-sdk-linux.x64-21.7.0.0.0.zip -d  /opt/oracle
  
-# #RUN echo 'instantclient,/opt/oracle/instantclient' | pecl install oci8
+RUN ln -s /opt/oracle/instantclient_21_7 /opt/oracle/instantclient
+RUN docker-php-ext-configure oci8  --with-oci8=instantclient,/opt/oracle/instantclient \
+        && docker-php-ext-install oci8
+RUN echo /opt/oracle/instantclient_21_7/ > /etc/ld.so.conf.d/oic.conf && \
+    ldconfig   
 # RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient
+ 
+RUN docker-php-ext-install pdo_mysql zip  exif pcntl
+#RUN docker-php-ext-install mbstring
+# RUN docker-php-ext-install  -j5 mcrypt
 
-# RUN docker-php-ext-configure intl
-# RUN docker-php-ext-install pdo_oci
-# RUN docker-php-ext-enable oci8
-
-
-# RUN set -x \
-#         && docker-php-ext-install -j$(nproc) \
-#         bcmath \
-#         intl \
-#         gd \
-#         pdo_oci \
-#         zip
-
+RUN docker-php-ext-install bcmath  
+RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient,21.7
+RUN docker-php-ext-install pdo_oci 
+RUN docker-php-ext-install intl gd zip 
+ 
 # RUN set -x \
 #         && echo 'instantclient,/opt/oracle/instantclient/' | pecl install \
 #         oci8-2.2.0 \
