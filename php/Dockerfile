@@ -1,6 +1,5 @@
 FROM php:8.1-fpm
 ENV ORACLE_HOME=/opt/oracle/instantclient
-ENV LD_LIBRARY_PATH=instantclient,/opt/oracle/instantclient
 
 RUN set -x \
         && groupmod -g 1000 www-data \
@@ -52,13 +51,16 @@ RUN wget https://download.oracle.com/otn_software/linux/instantclient/217000/ins
 # RUN unzip /tmp/instantclient-sqlplus-linux.x64-21.7.0.0.0.zip -d  /opt/oracle
 # RUN unzip /tmp/instantclient-sdk-linux.x64-21.7.0.0.0.zip -d  /opt/oracle
  
+
+RUN echo /opt/oracle/instantclient/ > /etc/ld.so.conf.d/oic.conf && \
+    ldconfig 
+ENV LD_LIBRARY_PATH=instantclient,/opt/oracle/instantclient
+  
 RUN ln -s /opt/oracle/instantclient_21_7 /opt/oracle/instantclient
 RUN docker-php-ext-configure oci8  --with-oci8=instantclient,/opt/oracle/instantclient \
         && docker-php-ext-install oci8
-RUN echo /opt/oracle/instantclient_21_7/ > /etc/ld.so.conf.d/oic.conf && \
-    ldconfig   
-# RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient
- 
+        
+RUN docker-php-ext-configure pdo_oci --with-pdo-oci=instantclient,/opt/oracle/instantclient
 RUN docker-php-ext-install pdo_mysql zip  exif pcntl
 #RUN docker-php-ext-install mbstring
 # RUN docker-php-ext-install  -j5 mcrypt
