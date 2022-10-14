@@ -2,6 +2,7 @@ Lastest detail 9/10/2022
 By Kunlarat <aprt06@gmail.com>
 Instant Client version 21_7
 /usr/local/etc/php-fpm.d/www.conf
+/usr/local/sbin/php-fpm
 # php -v
 PHP 8.1.11 (cli) (built: Oct  5 2022 07:45:06) (NTS)
 Copyright (c) The PHP Group
