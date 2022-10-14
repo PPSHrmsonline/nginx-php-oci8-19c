@@ -4,7 +4,7 @@ ENV ORACLE_HOME=/opt/oracle/instantclient
 RUN groupadd ppshrms
 RUN useradd -g ppshrms -d /var/www/html -s /sbin/nologin ppshrms
 RUN cp /usr/local/etc/php-fpm.d/www.conf /usr/local/etc/php-fpm.d/conf.default
-ADD ./conf/www.conf /usr/local/etc/php-fpm.d/
+ADD ./conf/ppshrms_pool.conf /usr/local/etc/php-fpm.d/
 RUN set -x \
         && apt-get update \
         && apt-get -y upgrade \
