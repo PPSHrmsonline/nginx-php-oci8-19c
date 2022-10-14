@@ -1,13 +1,10 @@
-FROM nginx:mainline-alpine
-
-# RUN set -x \
-#         && adduser -D -u 1000 -g 'www-data' www-data
-#         #  \
-        # && chown -R core: /usr/lib/nginx
-
-ADD ./conf.d/nginx.conf /etc/nginx/conf.d/
-RUN sed -i "s/user  nginx;/user  www-data;/g" /etc/nginx/nginx.conf
-
+FROM nginx
+ 
+RUN groupadd ppshrms
+RUN useradd -g ppshrms -d /var/www/html -s /sbin/nologin ppshrms
+RUN mkdir -p /etc/nginx/sites-enabled/ 
+ADD conf.d/hcm.conf /etc/nginx/sites-available/
+RUN  ln -s /etc/nginx/sites-available/hcm.conf /etc/nginx/sites-enabled/hcm.conf
 
 
         #&& curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
