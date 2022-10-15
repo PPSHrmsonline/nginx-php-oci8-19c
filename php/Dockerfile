@@ -92,3 +92,6 @@ RUN set -x \
         && echo "max_input_time = 300" | tee -a /usr/local/etc/php/conf.d/memory-limit-php.ini \        
         && echo "upload_max_filesize = 512M" | tee /usr/local/etc/php/conf.d/file.ini \
         && echo "post_max_size = 512M" | tee -a /usr/local/etc/php/conf.d/file.ini 
+EXPOSE 9000
+
+CMD ["php-fpm"]

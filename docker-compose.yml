@@ -3,8 +3,8 @@ services:
     php:
         build: "./php"
         container_name: "php"
-        expose:
-            - 9000
+        # expose:
+        #     - 9000
         volumes:
             - "./html:/var/www/html"
         #working_dir: "/usr/share/code"
@@ -24,7 +24,8 @@ services:
             - "./nginx/conf.d:/etc/nginx/conf.d:ro"
         ports:
             - 8080:80
-      
+        links:
+            - php    
         networks:
             - ppshrms-network
         restart: always
